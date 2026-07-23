@@ -1,0 +1,26 @@
+# Environment variables
+.env
+
+# Go build files
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.cursor/
+.idea/
+
+# OS
+.DS_Store
