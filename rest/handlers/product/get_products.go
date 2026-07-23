@@ -1,6 +1,7 @@
 package product
 
 import (
+	"ecommerce/domain"
 	"ecommerce/util"
 	"net/http"
 	"strconv"
@@ -23,17 +24,36 @@ func (h *Handler) Getproducts(w http.ResponseWriter, r *http.Request) {
 		limit = 10
 	}
 
+	prdCh := make(chan []*domain.Product)
+	go func() {
+		productList, err := h.svc.List(page, limit)
+		if err != nil {
+			util.SendError(w, http.StatusInternalServerError, "Internal server error")
+			return
+		}
+
+		prdCh <- productList
+	}()
+
 	productList, err := h.svc.List(page, limit)
 	if err != nil {
 		util.SendError(w, http.StatusInternalServerError, "Internal server error")
 		return
 	}
 
-	cnt, err := h.svc.Count()
-	if err != nil {
-		util.SendError(w, http.StatusInternalServerError, "Internal server error")
-		return
-	}
+	ch := make(chan int64)
+	go func() {
+		cnt, err := h.svc.Count()
+		if err != nil {
+			util.SendError(w, http.StatusInternalServerError, "Internal server error")
+			return
+		}
 
-	util.SendPage(w, productList, page, limit, cnt)
+		ch <- cnt
+	}()
+
+	productList = <-prdCh
+	totalCnt := <-ch
+
+	util.SendPage(w, productList, page, limit, totalCnt)
 }
