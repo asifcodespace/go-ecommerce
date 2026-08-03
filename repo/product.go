@@ -134,19 +134,16 @@ func (r *productRepo) Update(p domain.Product) (*domain.Product, error) {
 	UPDATE products
 	SET title=$1, description=$2, price=$3, img_url=$4
 	WHERE id = $5
-	RETURNING id, title, description, price, img_url
-  `
+	`
 
-	var updated domain.Product
-	err := r.db.Get(&updated, query, p.Title, p.Description, p.Price, p.ImgUrl, p.ID)
+	row := r.db.QueryRow(query, p.Title, p.Description, p.Price, p.ImgUrl, p.ID)
+	err := row.Err()
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, sql.ErrNoRows
-		}
 		return nil, err
 	}
 
-	return &updated, nil
+	return &p, nil
+
 }
 func (r *productRepo) Delete(id int) error {
 	query := `
