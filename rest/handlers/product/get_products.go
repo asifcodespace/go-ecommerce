@@ -35,12 +35,6 @@ func (h *Handler) Getproducts(w http.ResponseWriter, r *http.Request) {
 		prdCh <- productList
 	}()
 
-	productList, err := h.svc.List(page, limit)
-	if err != nil {
-		util.SendError(w, http.StatusInternalServerError, "Internal server error")
-		return
-	}
-
 	ch := make(chan int64)
 	go func() {
 		cnt, err := h.svc.Count()
@@ -52,7 +46,7 @@ func (h *Handler) Getproducts(w http.ResponseWriter, r *http.Request) {
 		ch <- cnt
 	}()
 
-	productList = <-prdCh
+	productList := <-prdCh
 	totalCnt := <-ch
 
 	util.SendPage(w, productList, page, limit, totalCnt)

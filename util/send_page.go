@@ -14,21 +14,14 @@ type PaginatedData struct {
 	Pagination Pagination `json:"pagination"`
 }
 
-func totalPages(cnt, limit int64) int64 {
-	if limit <= 0 || cnt <= 0 {
-		return 0
-	}
-	return (cnt + limit - 1) / limit
-}
-
-func SendPage(w http.ResponseWriter, data any, page, limit, cnt int64) {
+func SendPage(w http.ResponseWriter, data any, page, limit, totalcnt int64) {
 	paginatedData := PaginatedData{
 		Data: data,
 		Pagination: Pagination{
 			Page:       page,
 			Limit:      limit,
-			TotalItems: cnt,
-			TotalPages: totalPages(cnt, limit),
+			TotalItems: totalcnt,
+			TotalPages: totalcnt / limit,
 		},
 	}
 	SendData(w, http.StatusOK, paginatedData)

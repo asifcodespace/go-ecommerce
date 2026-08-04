@@ -75,15 +75,9 @@ func (r *productRepo) Get(id int) (*domain.Product, error) {
 	return &prd, nil
 
 }
-func offsetForPage(page, limit int64) int64 {
-	if page <= 1 {
-		return 0
-	}
-	return (page - 1) * limit
-}
 
 func (r *productRepo) List(page, limit int64) ([]*domain.Product, error) {
-	offset := offsetForPage(page, limit)
+	offset := ((page - 1) * limit) + 1
 
 	var prdList []*domain.Product
 
