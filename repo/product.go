@@ -113,13 +113,13 @@ func (r *productRepo) Count() (int64, error) {
 		FROM products 
 	  `
 
-	var count int
+	var count int64
 	err := r.db.QueryRow(query).Scan(&count)
 	if err != nil {
 		return 0, err
 	}
 
-	return int64(count), nil
+	return count, nil
 
 }
 

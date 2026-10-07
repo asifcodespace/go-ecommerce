@@ -2,10 +2,10 @@ package middleware
 
 import "net/http"
 
-type Middleware func(http.Handler) http.Handler //eta ekta type jeta onno ekta type ke support kore
+type Middleware func(http.Handler) http.Handler
 
 type Manager struct {
-	globalMiddlewares []Middleware //serve.go te manager.Use theke middleware gulo ekhane ashbe
+	globalMiddlewares []Middleware
 }
 
 func NewManager() *Manager {
@@ -23,7 +23,7 @@ func (mngr *Manager) With(handler http.Handler, middlewares ...Middleware) http.
 
 	h := handler
 
-	for _, middleware := range middlewares { //amra jodi extra middleware With() er moddhe dei routes er vitor theke tahole ekhane ashbe
+	for _, middleware := range middlewares {
 
 		h = middleware(h)
 	}

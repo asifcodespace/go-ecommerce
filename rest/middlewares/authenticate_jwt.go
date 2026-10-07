@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (m *Middlewares) AuthenticateJWT(next http.Handler) http.Handler { //(next) holo argument theke asha func
+func (m *Middlewares) AuthenticateJWT(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		header := r.Header.Get("Authorization")
 
